@@ -785,16 +785,12 @@ int main()
           part = strtok(NULL, "#");
         }
 
-        if (strlen(identity) == 0 || strlen(country) == 0 || strlen(yearOfBirth) == 0)
-        {
+        if (strlen(PID) == 0)
           continue;
-        }
-        else
-        {
-          numberOfRecords++;
 
-          head = addPlayerStruct(PID, identity, country, yearOfBirth, head);
-        }
+        numberOfRecords++;
+
+        head = addPlayerStruct(PID, identity, country, yearOfBirth, head);
 
         rewind(solutions);
 
