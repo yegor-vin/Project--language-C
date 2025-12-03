@@ -511,7 +511,7 @@ void addRecordToPlayer(struct Player *player, char SID[9], char DifficultyOfGame
   player->record = newRecord;
 }
 
-struct Player *addPlayerStruct(char PID[10], char identity[50], char country[50], char yearOfBirth[5], struct Player *head)
+struct Player *addPlayerStruct(char PID[10], char identity[50], char country[50], int yearOfBirth, struct Player *head)
 {
 
   struct Player *newPlayer = malloc(sizeof(struct Player));
@@ -524,7 +524,7 @@ struct Player *addPlayerStruct(char PID[10], char identity[50], char country[50]
   sprintf(newPlayer->PID, PID);
   sprintf(newPlayer->identity, identity);
   sprintf(newPlayer->country, country);
-  newPlayer->yearOfBirth = (int)strtol(yearOfBirth, NULL, 10);
+  newPlayer->yearOfBirth = yearOfBirth;
   newPlayer->record = NULL;
   newPlayer->nextPlayer = head;
 
@@ -549,6 +549,127 @@ void printfListOfStructures(struct Player *head)
     currentPlayer = currentPlayer->nextPlayer;
     printf("\n");
   }
+}
+
+void addNewPlayerToLinkedList(struct Player **head, char name[50], char country[50], int yearOfBirth, int position)
+{
+  struct Player *newPlayer = malloc(sizeof(struct Player));
+  if (newPlayer == NULL)
+    return;
+
+  memset(newPlayer, 0, sizeof(struct Player));
+  sprintf(newPlayer->identity, "%s", name);
+  sprintf(newPlayer->country, "%s", country);
+  newPlayer->yearOfBirth = yearOfBirth;
+
+  if (*head == NULL)
+  {
+    sprintf(newPlayer->PID, "PIDa00001");
+    newPlayer->nextPlayer = *head;
+    *head = newPlayer;
+    printf("A: Record successfully added to position 1\n");
+    return;
+  }
+
+  int numberOfPlayers = 0;
+  int playerExists = 0;
+  struct Player *current = *head;
+
+  while (current != NULL)
+  {
+    if (strcmp(current->identity, name) == 0 && current->yearOfBirth == yearOfBirth)
+      playerExists++;
+    numberOfPlayers++;
+    current = current->nextPlayer;
+  }
+
+  if (playerExists != 0)
+  {
+    printf("A: Duplicate record\n");
+    free(newPlayer);
+    return;
+  }
+
+  int *pidNumbers = malloc(sizeof(int) * numberOfPlayers);
+  if (pidNumbers == NULL)
+  {
+    free(newPlayer);
+    return;
+  }
+
+  int countUsedPIDs = 0;
+  current = *head;
+
+  while (current != NULL)
+  {
+    if (strncmp(current->PID, "PIDa", 4) == 0)
+    {
+      sscanf(current->PID + 4, "%05d", &pidNumbers[countUsedPIDs]);
+      countUsedPIDs++;
+    }
+    current = current->nextPlayer;
+  }
+
+  int pidNumber = 1;
+  while (1)
+  {
+    int foundFree = 0;
+
+    for (int i = 0; i < countUsedPIDs; i++)
+    {
+      if (pidNumber == *(pidNumbers + i))
+      {
+        foundFree = 1;
+        break;
+      }
+    }
+
+    if (!foundFree)
+    {
+      break;
+    }
+
+    pidNumber++;
+  }
+
+  sprintf(newPlayer->PID, "PIDa%05d", pidNumber);
+  free(pidNumbers);
+
+  if (position == 1)
+  {
+    newPlayer->nextPlayer = *head;
+    *head = newPlayer;
+  }
+  else if (position > numberOfPlayers)
+  {
+
+    current = *head;
+    while (current->nextPlayer != NULL)
+      current = current->nextPlayer;
+    current->nextPlayer = newPlayer;
+    newPlayer->nextPlayer = NULL;
+    position += 1;
+  }
+  else
+  {
+
+    current = *head;
+    struct Player *prev = NULL;
+    int playerPosition = 1;
+
+    while (playerPosition < position && current != NULL)
+    {
+      prev = current;
+      current = current->nextPlayer;
+      playerPosition++;
+    }
+
+    newPlayer->nextPlayer = current;
+    if (prev != NULL)
+      prev->nextPlayer = newPlayer;
+  }
+
+  printf("A: Record successfully added to position %d\n", position);
 }
 
 int main()
@@ -753,7 +874,7 @@ int main()
         char PID[10] = "";
         char identity[50] = "";
         char country[50] = "";
-        char yearOfBirth[5] = "";
+        int yearOfBirth = 0;
 
         while (part)
         {
@@ -773,8 +894,7 @@ int main()
             country[sizeof(country) - 1] = '\0';
             break;
           case 3:
-            strncpy(yearOfBirth, part, sizeof(yearOfBirth) - 1);
-            yearOfBirth[sizeof(yearOfBirth) - 1] = '\0';
+            yearOfBirth = (int)strtol(part, NULL, 10);
             break;
 
           default:
@@ -798,7 +918,7 @@ int main()
 
         while ((fgets(currentStringSol, sizeof(currentStringSol), solutions)) != NULL)
         {
-          currentString[strcspn(currentString, "\n")] = '\0';
+          currentStringSol[strcspn(currentStringSol, "\n")] = '\0';
 
           if (strstr(currentStringSol, PID) != NULL)
           {
@@ -860,6 +980,19 @@ int main()
       printfListOfStructures(head);
     }
 
+    else if (strcmp(command, "a") == 0)
+    {
+      int Y;
+      char name[50];
+      char country[50];
+      int yearOfBirth;
+
+      scanf("%d", &Y);
+      scanf(" %49[^\n]", name);
+      scanf(" %49[^\n]", country);
+      scanf("%d", &yearOfBirth);
+      addNewPlayerToLinkedList(&head, name, country, yearOfBirth, Y);
+    }
     else
     {
       printf("V:Incorrect listing selection\n");
