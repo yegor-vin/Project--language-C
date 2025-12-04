@@ -648,7 +648,9 @@ void addNewPlayerToLinkedList(struct Player **head, char name[50], char country[
       current = current->nextPlayer;
     current->nextPlayer = newPlayer;
     newPlayer->nextPlayer = NULL;
-    position += 1;
+    numberOfPlayers += 1;
+    printf("A: Record successfully added to position %d\n", numberOfPlayers);
+    return;
   }
   else
   {
