@@ -535,14 +535,20 @@ void printfListOfStructures(struct Player *head)
 {
   struct Player *currentPlayer = head;
 
+  if (head == NULL)
+  {
+    printf("V3: Merge list not filled\n");
+    return;
+  }
+
   while (currentPlayer != NULL)
   {
-    printf("Player ID: %s\n Name: %s\n Country: %s\n Year of Birth: %d\n", currentPlayer->PID, currentPlayer->identity, currentPlayer->country, currentPlayer->yearOfBirth);
+    printf("PID: %s\n Identity: %s\n Country: %s\n Year of Birth: %d\n", currentPlayer->PID, currentPlayer->identity, currentPlayer->country, currentPlayer->yearOfBirth);
     struct Record *temp = currentPlayer->record;
 
     while (temp != NULL)
     {
-      printf("Record: %s/ %c/ %s/ %c/ %s/ %d\n", temp->SID, temp->DifficultyOfGame, temp->GID, temp->DifficultyOfCompetition, temp->GameDate, temp->Duration);
+      printf("Result: %s/ %c/ %s/ %c/ %s/ %d\n", temp->SID, temp->DifficultyOfGame, temp->GID, temp->DifficultyOfCompetition, temp->GameDate, temp->Duration);
       temp = temp->nextRecord;
     }
 
@@ -672,6 +678,57 @@ void addNewPlayerToLinkedList(struct Player **head, char name[50], char country[
   }
 
   printf("A: Record successfully added to position %d\n", position);
+}
+
+void deleteResultsFromLinkedList(struct Player *head, char *competitionIdentifier)
+{
+
+  if (head == NULL)
+  {
+    printf("S: Linked list has not been created\n");
+    return;
+  }
+
+  int numberOfDeletedResults = 0;
+
+  struct Player *current = head;
+
+  while (current != NULL)
+  {
+    struct Record *currentRec = current->record;
+    struct Record *prevRec = NULL;
+
+    while (currentRec != NULL)
+    {
+      if (strcmp(currentRec->GID, competitionIdentifier) == 0)
+      {
+
+        struct Record *recordToDel = currentRec;
+        if (prevRec == NULL)
+        {
+
+          current->record = currentRec->nextRecord;
+        }
+        else
+        {
+
+          prevRec->nextRecord = currentRec->nextRecord;
+        }
+        currentRec = currentRec->nextRecord;
+        free(recordToDel);
+        numberOfDeletedResults++;
+      }
+      else
+      {
+
+        prevRec = currentRec;
+        currentRec = currentRec->nextRecord;
+      }
+    }
+    current = current->nextPlayer;
+  }
+
+  printf("S: Deleted %d records!\n", numberOfDeletedResults);
 }
 
 int main()
@@ -995,6 +1052,24 @@ int main()
       scanf("%d", &yearOfBirth);
       addNewPlayerToLinkedList(&head, name, country, yearOfBirth, Y);
     }
+
+    else if (strcmp(command, "s") == 0)
+    {
+
+      char competitionIdentifier[8];
+
+      scanf("%s", competitionIdentifier);
+
+      if (!checkCompetitionIdentifier(competitionIdentifier))
+        do
+        {
+          printf("S: incorrect input format, enter again: ");
+          scanf("%s", competitionIdentifier);
+        } while (!checkCompetitionIdentifier(competitionIdentifier));
+
+      deleteResultsFromLinkedList(head, competitionIdentifier);
+    }
+
     else
     {
       printf("V:Incorrect listing selection\n");
