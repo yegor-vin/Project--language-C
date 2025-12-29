@@ -1000,35 +1000,46 @@ void sortLL(struct Player *head)
       continue;
     }
 
-    while (currentRec->nextRecord != NULL)
+    while (1)
     {
-      struct Record *nextRec = currentRec->nextRecord;
+      int swapped = 0;
+      currentRec = current->record;
+      prevRec = NULL;
 
-      if ((currentRec->Duration) > (nextRec->Duration))
+      while (currentRec->nextRecord != NULL)
       {
-        if (prevRec == NULL)
+        struct Record *nextRec = currentRec->nextRecord;
+
+        if ((currentRec->Duration) > (nextRec->Duration))
         {
+          if (prevRec == NULL)
+          {
 
-          current->record = nextRec;
-          currentRec->nextRecord = nextRec->nextRecord;
-          nextRec->nextRecord = currentRec;
+            current->record = nextRec;
+            currentRec->nextRecord = nextRec->nextRecord;
+            nextRec->nextRecord = currentRec;
+          }
+
+          else
+          {
+            currentRec->nextRecord = nextRec->nextRecord;
+            nextRec->nextRecord = currentRec;
+            prevRec->nextRecord = nextRec;
+          }
+
+          prevRec = currentRec;
+          currentRec = nextRec;
+          swapped = 1;
         }
-
         else
         {
-          currentRec->nextRecord = nextRec->nextRecord;
-          nextRec->nextRecord = currentRec;
-          prevRec->nextRecord = nextRec;
+          prevRec = currentRec;
+          currentRec = nextRec;
         }
+      }
 
-        prevRec = currentRec;
-        currentRec = nextRec;
-      }
-      else
-      {
-        prevRec = currentRec;
-        currentRec = nextRec;
-      }
+      if (swapped == 0)
+        break;
     }
 
     current = current->nextPlayer;
