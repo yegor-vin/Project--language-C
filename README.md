@@ -162,35 +162,10 @@ gcc -std=c11 -Wall -Wextra -o prpr StudentID_project_vX.c
 
 Commands are then typed on stdin, e.g.:
 ```
-v 1
+v1
 n
-v 2
+v2
 h
 SIDB0002
 k
 ```
-
-## Submission
-
-- Submit only the `*.c` source file to the designated AIS location (no
-  `*.zip`, `*.exe`, or other file types).
-- File naming: `StudentID_project_v1.c`, `StudentID_project_v2.c`,
-  `StudentID_project_v3.c` for each submission phase.
-- Work must be done independently; submissions are compared for
-  similarity, with matches referred to the disciplinary committee.
-- A personal presentation of the project to the trainer is required after
-  the second or third submission (worth up to 3.0 points).
-
-### Grading phases & deadlines
-
-| Version | Deadline | Evaluated commands | Max points (this phase) |
-|---|---|---|---|
-| v1 | 27.10.2024 23:59:59 | `v1`, `v`, `h` | 1.4 (`v1`) + 0.3 (`v` other) + 1.9 (`h`) |
-| v2 | 10.11.2024 23:59:59 | `n`, `q`, `w`, `e`, `v2` | 2.2 + 2.3 + 2.3 + 1.9 + 1.8 |
-| v3 | 1.12.2024 23:59:59 | `m`, `a`, `s`, `d`, `v3`, `k` | 4.0 + 2.8 + 3.4 + 2.4 + 2.0 + 3.4 |
-
-Plus: 3.0 points for the personal presentation.
-
-> **Note:** If a command from phase 1 or 2 is instead first submitted in a
-> later phase, only **60%** of the points otherwise available for that
-> command are awarded.
