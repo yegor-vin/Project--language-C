@@ -611,11 +611,11 @@ void addRecordToPlayer(struct Player *player, char SID[9], char DifficultyOfGame
     return;
   }
 
-  sprintf(newRecord->SID, SID);
+  sprintf(newRecord->SID, "%s", SID);
   newRecord->DifficultyOfGame = DifficultyOfGame;
-  sprintf(newRecord->GID, GID);
+  sprintf(newRecord->GID, "%s", GID);
   newRecord->DifficultyOfCompetition = DifficultyOfCompetition;
-  sprintf(newRecord->GameDate, GameDate);
+  sprintf(newRecord->GameDate, "%s", GameDate);
   newRecord->Duration = Duration;
   newRecord->nextRecord = player->record;
   player->record = newRecord;
@@ -631,9 +631,9 @@ struct Player *addPlayerStruct(char PID[10], char identity[50], char country[50]
     return NULL;
   }
 
-  sprintf(newPlayer->PID, PID);
-  sprintf(newPlayer->identity, identity);
-  sprintf(newPlayer->country, country);
+  sprintf(newPlayer->PID, "%s", PID);
+  sprintf(newPlayer->identity, "%s", identity);
+  sprintf(newPlayer->country, "%s", country);
   newPlayer->yearOfBirth = yearOfBirth;
   newPlayer->record = NULL;
   newPlayer->nextPlayer = head;
